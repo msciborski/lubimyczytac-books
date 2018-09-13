@@ -1,0 +1,13 @@
+{
+  "name": "lubimyczytac-books",
+  "version": "1.0.0",
+  "description": "Scraping books from lubimyczytac",
+  "main": "LubimyCzytacFetch.js",
+  "author": "msciborski",
+  "license": "MIT",
+  "dependencies": {
+    "cherio": "^1.0.0-rc.2",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2"
+  }
+}

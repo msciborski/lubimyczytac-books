@@ -1,10 +1,14 @@
 const rp = require('request-promise');
 const cherio = require('cherio');
 
+const BASE_URL = 'http://lubimyczytac.pl/szukaj/ksiazki';
 
-const BASE_URL = 'http://lubimyczytac.pl/szukaj/ksiazki?phrase=';
-
-const createUrl = phrase => `${BASE_URL}${phrase}`;
+const createUrl = (phrase, page) => {
+  if(page === 1) {
+    return `${BASE_URL}?phrase=${phrase}`;
+  }
+  return `${BASE_URL}/${page}?phrase=${phrase}`;
+};
 
 const setupOptions = (method = 'GET', uri, queryStrings = {}) => ({
   uri,
@@ -31,12 +35,21 @@ const fetchPrevPageUrl = ($) => {
   return prevPageUrl === '#' ? undefined : prevPageUrl;
 };
 
-const fetchBookUrlsForLink = async (urlForSearch) => {
+const fetchPageCount = ($) => {
+  const lastPage = $('.pager-default td ul li:not(.next-page):not(.prev-page) a')
+    .map((_, el) => parseInt($(el).text(),10)).get()
+    .sort((a,b) => b - a)[0];
+  return lastPage;
+};
+
+const fetchBookUrlsAndPages = async (urlForSearch) => {
   const $ = await rp(setupOptions('GET', urlForSearch));
   const bookUrls = fetchBookUrls($);
   const nextPageUrl = fetchNextPageUrl($);
   const prevPageUrl = fetchPrevPageUrl($);
+  const pageCount = fetchPageCount($);
   return {
+    pageCount,
     books: bookUrls,
     prevPageUrl,
     nextPageUrl,
@@ -71,19 +84,20 @@ const fetchBook = async (bookUrl) => {
   };
 };
 const getBooks = async (url) => {
-  const urls = await fetchBookUrlsForLink(url);
-  const booksPromises = urls.books.map(book => fetchBook(book));
+  const urlsAndPages = await fetchBookUrlsAndPages(url);
+  const booksPromises = urlsAndPages.books.map(book => fetchBook(book));
 
   const books = await Promise.all(booksPromises);
   return {
-    books,
-    nextPageUrl: urls.nextPageUrl,
-    prevPageUrl: urls.prevPageUrl,
+
+    pageCount: urlsAndPages.pageCount,
+    nextPageUrl: urlsAndPages.nextPageUrl,
+    prevPageUrl: urlsAndPages.prevPageUrl,
   };
 };
 
-const getBooksForPhrase = async (phrase) => {
-  const url = createUrl(phrase);
+const getBooksForPhrase = async (phrase, page = 1) => {
+  const url = createUrl(phrase, page);
   const booksList = await getBooks(url);
   return booksList;
 };

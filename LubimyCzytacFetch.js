@@ -89,7 +89,7 @@ const getBooks = async (url) => {
 
   const books = await Promise.all(booksPromises);
   return {
-
+    books,
     pageCount: urlsAndPages.pageCount,
     nextPageUrl: urlsAndPages.nextPageUrl,
     prevPageUrl: urlsAndPages.prevPageUrl,

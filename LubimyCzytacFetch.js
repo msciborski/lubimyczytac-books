@@ -19,6 +19,8 @@ const setupOptions = (method = 'GET', uri, queryStrings = {}) => ({
 
 const filterUrls = urls => urls.filter(u => u.match(/\/ksiazka\//));
 
+const removeDuplicates = array => Array.from(new Set(array));
+
 const fetchBookUrls = ($) => {
   const results = $('.books-list .bookTitle')
     .map((_, el) => $(el).attr('href')).get();
@@ -56,35 +58,36 @@ const fetchBookUrlsAndPages = async (urlForSearch) => {
   };
 };
 
-const fetchBookDetails = ($) => {
-  const isbn = $('dd span[itemprop="isbn"]').text();
-  const publishingDate = $('dd[itemprop="datePublished"]').attr('content');
-
-  return {
-    isbn,
-    publishingDate,
-  };
-};
-
-const fetchBook = async (bookUrl) => {
-  const $ = await rp(setupOptions('GET', bookUrl));
-
+const fetchTitle = ($) => {
   let title = $('h1[itemprop="name"] a').text();
   if (title === '') {
     title = $('h1[itemprop="name"]').text();
   }
+  return title;
+};
 
+const fetchAuthor = ($) => {
+  debugger;
   let authorsList = $('.author-info-container a[itemprop="name"]').map((_, el) => $(el).text()).get();
-  if (authorsList.length > 2) {
-    authorsList = authorsList.slice(2)
-  }
-  const author =  authorsList.join(', ')
-  const bookDetails = fetchBookDetails($);
+  return removeDuplicates(authorsList);
+};
+
+const fetchIsbn = $ => $('dd span[itemprop="isbn"]').text();
+const fetchPublishingDate = $ => $('dd[itemprop="datePublished"]').attr('content');
+
+const fetchBook = async (bookUrl) => {
+  const $ = await rp(setupOptions('GET', bookUrl));
+
+  const title = fetchTitle($);
+  const author = fetchAuthor($);
+  const isbn = fetchIsbn($);
+  const publishingDate = fetchPublishingDate($);
+
   return {
     title,
     author,
-    isbn: bookDetails.isbn,
-    publishingDate: bookDetails.publishingDate,
+    isbn,
+    publishingDate,
   };
 };
 const getBooks = async (url) => {

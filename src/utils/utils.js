@@ -3,7 +3,7 @@ const cherio = require('cherio');
 const BASE_URL = 'http://lubimyczytac.pl/szukaj/ksiazki';
 
 const createUrl = (phrase, page) => {
-  if(page === 1) {
+  if (page === 1) {
     return `${BASE_URL}?phrase=${phrase}`;
   }
   return `${BASE_URL}/${page}?phrase=${phrase}`;

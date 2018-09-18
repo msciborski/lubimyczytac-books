@@ -1,6 +1,6 @@
-const util = require('./utils');
 const rp = require('request-promise');
+const util = require('./utils');
 
-const getCherioPage =  async url => await rp(util.setupOptions('GET', url));
+const getCherioPage = async url => rp(util.setupOptions('GET', url));
 
 module.exports.getCherioPage = getCherioPage;

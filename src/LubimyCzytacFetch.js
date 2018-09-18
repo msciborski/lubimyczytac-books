@@ -2,7 +2,7 @@ const util = require('./utils/utils');
 const fetchBookInfo = require('./utils/fetch/fetchBookInformation');
 const fetchBookUrls = require('./utils/fetch/fetchBookUrls');
 
-const getBook = async url => await fetchBookInfo.fetchBook(url);
+const getBook = url => fetchBookInfo.fetchBook(url);
 
 const getBooks = async (url) => {
   const urlsAndPages = await fetchBookUrls.fetchBookUrlsAndPages(url);
@@ -29,9 +29,8 @@ const getBooksFromLink = async (url) => {
   return booksList;
 };
 
-const getBookFromLink = async url => await getBook(url);
+const getBookFromLink = async url => getBook(url);
 
 module.exports.getBooksFromPhrase = getBooksFromPhrase;
 module.exports.getBooksFromLink = getBooksFromLink;
 module.exports.getBookFromLink = getBookFromLink;
-

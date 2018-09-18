@@ -11,7 +11,7 @@ const fetchTitle = ($) => {
 };
 
 const fetchAuthor = ($) => {
-  let authorsList = $('.author-info-container a[itemprop="name"]').map((_, el) => $(el).text()).get();
+  const authorsList = $('.author-info-container a[itemprop="name"]').map((_, el) => $(el).text()).get();
   return util.removeDuplicates(authorsList);
 };
 

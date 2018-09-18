@@ -74,7 +74,11 @@ const fetchBook = async (bookUrl) => {
     title = $('h1[itemprop="name"]').text();
   }
 
-  const author = $('.author-info-container a[itemprop="name"]').map((_, el) => $(el).text()).get().join(' ,');
+  let authorsList = $('.author-info-container a[itemprop="name"]').map((_, el) => $(el).text()).get();
+  if (authorsList.length > 2) {
+    authorsList = authorsList.slice(2)
+  }
+  const author =  authorsList.join(', ')
   const bookDetails = fetchBookDetails($);
   return {
     title,

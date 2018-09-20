@@ -5,7 +5,8 @@ const fetchPageCount = ($) => {
   const lastPage = $('.pager-default td ul li:not(.next-page):not(.prev-page) a')
     .map((_, el) => parseInt($(el).text(), 10)).get()
     .sort((a, b) => b - a)[0];
-  return lastPage;
+
+  return lastPage && 1;
 };
 
 const fetchBookUrls = ($) => {

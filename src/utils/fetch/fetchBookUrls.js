@@ -6,7 +6,7 @@ const fetchPageCount = ($) => {
     .map((_, el) => parseInt($(el).text(), 10)).get()
     .sort((a, b) => b - a)[0];
 
-  return lastPage && 1;
+  return lastPage || 1;
 };
 
 const fetchBookUrls = ($) => {
